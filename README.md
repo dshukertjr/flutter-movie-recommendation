@@ -4,7 +4,33 @@ A Flutter app demonstrating how semantic search powered by Open AI and Supabase 
 
 ## Getting Started
 
--
+Install the dependencies:
+
+```bash
+cd dart_edge
+dart pub get
+cd ..
+cd flutter
+dart pub get
+```
+
+Run the edge functions
+
+```bash
+edge build supabase_functions --dev
+supabase start
+supabase functions serve dart_edge --no-verify-jwt
+```
+
+Run the Flutter app
+
+```bash
+
+```
+
+## Deploy the edge functions
+
+`get_film_data` function does not need to be deployed to cloud as it just calls the TMDB API, Open AI API and stores the information to Supabase.
 
 ## Tools
 
