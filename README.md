@@ -1,6 +1,8 @@
-# Semantic film recommendation engine
+# Content recommendation feature using Flutter, Open AI and Supabase
 
 A Flutter app demonstrating how semantic search powered by Open AI and Supabase vector database can be used to build a recommendation engine for movie films.
+
+![Flutter recommendation app](https://raw.githubusercontent.com/dshukertjr/flutter-movie-recommendation/main/.github/images/app.jpg)
 
 ## Getting Started
 
@@ -19,14 +21,12 @@ supabase link --project-ref YOUR_PROJECT_REF
 supabase secrets set --env-file ./supabase/.env
 ```
 
-Install the dependencies:
+Install the Flutter dependencies:
 
 ```bash
-cd dart_edge
-dart pub get
-cd ..
 cd flutter
 dart pub get
+cd ..
 ```
 
 Setup Supabase project
@@ -45,12 +45,8 @@ supabase functions deploy
 Run the Flutter app
 
 ```bash
-
+flutter run
 ```
-
-## Deploy the edge functions
-
-`get_film_data` function does not need to be deployed to cloud as it just calls the TMDB API, Open AI API and stores the information to Supabase.
 
 ## Tools used
 
