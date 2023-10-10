@@ -36,6 +36,7 @@ interface SupabaseFilm extends Film {
 }
 
 serve(async (req) => {
+  console.log(req.url)
   const year = new URLSearchParams(req.url).get('year')
 
   if (!year) {
