@@ -1,7 +1,7 @@
 import 'package:filmsearch/components/film_cell.dart';
 import 'package:filmsearch/main.dart';
 import 'package:filmsearch/models/film.dart';
-import 'package:filmsearch/pages/details_page.dart';
+
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {

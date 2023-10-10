@@ -54,7 +54,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 ),
                 const SizedBox(height: 24),
                 const Text(
-                  'Related:',
+                  'You might also like:',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

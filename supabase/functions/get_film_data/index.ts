@@ -63,19 +63,18 @@ serve(async (req) => {
   searchParams.set('watch_region', 'US')
   searchParams.set('with_original_language', 'en')
 
-  const tmdbApiUrl = `https://api.themoviedb.org/3/discover/movie?${searchParams.toString()}`
-  console.log({ tmdbApiUrl })
-
-  const tmdbResponse = await fetch(tmdbApiUrl, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${tmdbApiKey}`,
-    },
-  })
+  const tmdbResponse = await fetch(
+    `https://api.themoviedb.org/3/discover/movie?${searchParams.toString()}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${tmdbApiKey}`,
+      },
+    }
+  )
 
   const tmdbJson = await tmdbResponse.json()
-  console.log(tmdbJson)
 
   const tmdbStatus = tmdbResponse.status
   if (!(200 <= tmdbStatus && tmdbStatus <= 299)) {
@@ -84,11 +83,11 @@ serve(async (req) => {
     })
   }
 
-  const results = tmdbJson.results as Film[]
+  const films = tmdbJson.results as Film[]
 
-  const dtoFilms: SupabaseFilm[] = []
+  const filmsWithEmbeddings: SupabaseFilm[] = []
 
-  for (const film of results) {
+  for (const film of films) {
     const response = await fetch('https://api.openai.com/v1/embeddings', {
       method: 'POST',
       headers: {
@@ -102,7 +101,6 @@ serve(async (req) => {
     })
 
     const responseData = await response.json()
-    console.log({ openAPIResponse: responseData })
     if (responseData.error) {
       return returnError({
         message: `Error obtaining Open API embedding: ${responseData.error.message}`,
@@ -111,7 +109,7 @@ serve(async (req) => {
 
     const embedding = responseData.data[0].embedding
 
-    dtoFilms.push({
+    filmsWithEmbeddings.push({
       id: film.id,
       title: film.title,
       overview: film.overview,
@@ -121,9 +119,7 @@ serve(async (req) => {
     })
   }
 
-  console.log({ dtoFilms })
-
-  const { error } = await supabase.from('films').upsert(dtoFilms)
+  const { error } = await supabase.from('films').upsert(filmsWithEmbeddings)
 
   if (error) {
     return returnError({
@@ -133,7 +129,7 @@ serve(async (req) => {
 
   return new Response(
     JSON.stringify({
-      message: `${dtoFilms.length} films added for year ${year}`,
+      message: `${filmsWithEmbeddings.length} films added for year ${year}`,
     }),
     {
       status: 200,

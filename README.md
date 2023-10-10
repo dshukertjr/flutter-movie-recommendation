@@ -52,8 +52,9 @@ Run the Flutter app
 
 `get_film_data` function does not need to be deployed to cloud as it just calls the TMDB API, Open AI API and stores the information to Supabase.
 
-## Tools
+## Tools used
 
-- [Supabase](https://supabase.io/) - A full suit of tools to build your backend
-- Flutter
-- [Dart Edge](https://supabase.com/docs/guides/functions/dart-edge) - A tool kit to compile Edge Functions written in Dart to JavaScript to run them on the edge
+- [Flutter](https://flutter.dev/) - Used to create the interface of the app
+- [Supabase](https://supabase.com/) - Used to store embeddings as well as other movie data in the database
+- [Open AI API](https://openai.com/blog/openai-api) - Used to convert movie data into embeddings
+- [TMDB API](https://developer.themoviedb.org/docs) - Used to retrieve movie data
