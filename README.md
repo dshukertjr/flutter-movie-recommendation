@@ -14,12 +14,17 @@ cd flutter
 dart pub get
 ```
 
-Run the edge functions
+Setup Supabase project
 
 ```bash
-edge build supabase_functions --dev
-supabase start
-supabase functions serve dart_edge --no-verify-jwt
+supabase link --project-ref YOUR_PROJECT_REF
+supabase db push
+```
+
+Deploy edge functions
+
+```bash
+supabase functions deploy
 ```
 
 Run the Flutter app

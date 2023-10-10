@@ -1,4 +1,4 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { serve } from 'https://deno.land/std@0.203.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.0'
 
 // Get the environment variables
@@ -35,8 +35,12 @@ interface SupabaseFilm extends Film {
   embedding: number[]
 }
 
-serve(async (req) => {
-  const { year } = await req.json()
+serve(async (req: any) => {
+  const year = new URLSearchParams(req.url).get('year')
+
+  if (!year) {
+    throw 'year parameter was not set'
+  }
 
   const searchParams = new URLSearchParams()
   searchParams.set('sort_by', 'popularity.desc')
@@ -95,9 +99,3 @@ serve(async (req) => {
     }
   )
 })
-
-// To invoke:
-// curl -i --location --request POST 'http://localhost:54321/functions/v1/' \
-//   --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0' \
-//   --header 'Content-Type: application/json' \
-//   --data '{"name":"Functions"}'
