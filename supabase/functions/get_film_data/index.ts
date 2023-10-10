@@ -103,9 +103,9 @@ serve(async (req) => {
 
     const responseData = await response.json()
     console.log({ openAPIResponse: responseData })
-    if (!(200 <= tmdbStatus && tmdbStatus <= 299)) {
+    if (responseData.error) {
       return returnError({
-        message: 'Error obtaining Open API embedding',
+        message: `Error obtaining Open API embedding: ${responseData.error.message}`,
       })
     }
 
