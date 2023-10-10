@@ -1,28 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.0'
 
-// Get the environment variables
-const supabaseUrl = Deno.env.get('SUPABASE_URL')
-if (!supabaseUrl) {
-  throw 'Environment variable SUPABASE_URL is not set'
-}
-const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
-if (!supabaseServiceKey) {
-  throw 'Environment variable SUPABASE_SERVICE_ROLE_KEY is not set'
-}
-/** API key for TMDB API */
-const tmdbApiKey = Deno.env.get('TMDB_API_KEY')
-if (!tmdbApiKey) {
-  throw 'Environment variable TMDB_KEY is not set'
-}
-/** API key for Open AI API */
-const openAiApiKey = Deno.env.get('OPEN_AI_API_KEY')
-if (!openAiApiKey) {
-  throw 'Environment variable OPEN_AI_API_KEY is not set'
-}
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey)
-
 interface Film {
   id: number
   title: string
@@ -36,11 +14,42 @@ interface SupabaseFilm extends Film {
 }
 
 serve(async (req) => {
-  console.log(req.url)
+  // Get the environment variables
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')
+  if (!supabaseUrl) {
+    return returnError({
+      message: 'Environment variable SUPABASE_URL is not set',
+    })
+  }
+  const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  if (!supabaseServiceKey) {
+    return returnError({
+      message: 'Environment variable SUPABASE_SERVICE_ROLE_KEY is not set',
+    })
+  }
+  /** API key for TMDB API */
+  const tmdbApiKey = Deno.env.get('TMDB_API_KEY')
+  if (!tmdbApiKey) {
+    return returnError({
+      message: 'Environment variable TMDB_KEY is not set',
+    })
+  }
+  /** API key for Open AI API */
+  const openAiApiKey = Deno.env.get('OPEN_AI_API_KEY')
+  if (!openAiApiKey) {
+    return returnError({
+      message: 'Environment variable OPEN_AI_API_KEY is not set',
+    })
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
   const year = new URLSearchParams(req.url.split('?')[1]).get('year')
 
   if (!year) {
-    throw 'year parameter was not set'
+    return returnError({
+      message: 'year parameter was not set',
+    })
   }
 
   const searchParams = new URLSearchParams()
@@ -65,7 +74,15 @@ serve(async (req) => {
     }
   )
 
+  const tmdbStatus = tmdbResponse.status
+  if (!(200 <= tmdbStatus && tmdbStatus <= 299)) {
+    return returnError({
+      message: 'Error retrieving data from tmdb API',
+    })
+  }
+
   const tmdbJson = await tmdbResponse.json()
+  console.log(tmdbJson)
   const results = tmdbJson.results as Film[]
 
   const dtoFilms: SupabaseFilm[] = []
@@ -96,7 +113,26 @@ serve(async (req) => {
       message: `${dtoFilms.length} films added for year ${year}`,
     }),
     {
+      status: 200,
       headers: { 'Content-Type': 'application/json' },
     }
   )
 })
+
+function returnError({
+  message,
+  status = 400,
+}: {
+  message: string
+  status?: number
+}) {
+  return new Response(
+    JSON.stringify({
+      message,
+    }),
+    {
+      status: status,
+      headers: { 'Content-Type': 'application/json' },
+    }
+  )
+}
