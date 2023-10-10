@@ -114,7 +114,15 @@ serve(async (req) => {
     dtoFilms.push({ ...film, embedding })
   }
 
-  await supabase.from('films').upsert(dtoFilms)
+  console.log({ dtoFilms })
+
+  const { error } = await supabase.from('films').upsert(dtoFilms)
+
+  if (error) {
+    return returnError({
+      message: error.message,
+    })
+  }
 
   return new Response(
     JSON.stringify({
