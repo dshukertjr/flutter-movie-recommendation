@@ -1,4 +1,4 @@
-import { serve } from 'https://deno.land/std@0.203.0/http/server.ts'
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.0'
 
 // Get the environment variables
@@ -35,7 +35,7 @@ interface SupabaseFilm extends Film {
   embedding: number[]
 }
 
-serve(async (req: any) => {
+serve(async (req) => {
   const year = new URLSearchParams(req.url).get('year')
 
   if (!year) {
