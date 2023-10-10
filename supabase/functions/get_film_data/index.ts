@@ -63,16 +63,19 @@ serve(async (req) => {
   searchParams.set('watch_region', 'US')
   searchParams.set('with_original_language', 'en')
 
-  const tmdbResponse = await fetch(
-    `https://api.themoviedb.org/3/discover/movie?${searchParams.toString()}`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${tmdbApiKey}`,
-      },
-    }
-  )
+  const tmdbApiUrl = `https://api.themoviedb.org/3/discover/movie?${searchParams.toString()}`
+  console.log({ tmdbApiUrl })
+
+  const tmdbResponse = await fetch(tmdbApiUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${tmdbApiKey}`,
+    },
+  })
+
+  const tmdbJson = await tmdbResponse.json()
+  console.log(tmdbJson)
 
   const tmdbStatus = tmdbResponse.status
   if (!(200 <= tmdbStatus && tmdbStatus <= 299)) {
@@ -81,8 +84,6 @@ serve(async (req) => {
     })
   }
 
-  const tmdbJson = await tmdbResponse.json()
-  console.log(tmdbJson)
   const results = tmdbJson.results as Film[]
 
   const dtoFilms: SupabaseFilm[] = []
@@ -101,6 +102,13 @@ serve(async (req) => {
     })
 
     const responseData = await response.json()
+    console.log({ openAPIResponse: responseData })
+    if (!(200 <= tmdbStatus && tmdbStatus <= 299)) {
+      return returnError({
+        message: 'Error obtaining Open API embedding',
+      })
+    }
+
     const embedding = responseData.data[0].embedding
 
     dtoFilms.push({ ...film, embedding })

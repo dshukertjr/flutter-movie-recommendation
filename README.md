@@ -12,6 +12,13 @@ TMDB_API_KEY=your_tmdb_api_key
 OPEN_AI_API_KEY=your_tmdb_api_key
 ```
 
+Set environment variables on Supabase Edge functions
+
+```bash
+supabase link --project-ref YOUR_PROJECT_REF
+supabase secrets set --env-file ./supabase/.env
+```
+
 Install the dependencies:
 
 ```bash
