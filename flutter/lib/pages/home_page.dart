@@ -1,3 +1,4 @@
+import 'package:filmsearch/components/film_cell.dart';
 import 'package:filmsearch/main.dart';
 import 'package:filmsearch/models/film.dart';
 import 'package:filmsearch/pages/details_page.dart';
@@ -37,47 +38,7 @@ class _HomePageState extends State<HomePage> {
             return ListView.builder(
               itemBuilder: (context, index) {
                 final film = films[index];
-                return InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => DetailsPage(film: film),
-                      ),
-                    );
-                  },
-                  child: Stack(
-                    children: [
-                      Hero(
-                        tag: film.imageUrl,
-                        child: Image.network(film.imageUrl),
-                      ),
-                      Positioned.fill(
-                        top: null,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              Colors.black,
-                              Colors.black.withAlpha(0),
-                            ],
-                          )),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              film.title,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                return FilmCell(film: film);
               },
               itemCount: films.length,
             );
