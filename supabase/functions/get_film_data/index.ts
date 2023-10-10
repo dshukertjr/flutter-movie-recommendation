@@ -111,7 +111,14 @@ serve(async (req) => {
 
     const embedding = responseData.data[0].embedding
 
-    dtoFilms.push({ ...film, embedding })
+    dtoFilms.push({
+      id: film.id,
+      title: film.title,
+      overview: film.overview,
+      release_date: film.release_date,
+      backdrop_path: film.backdrop_path,
+      embedding,
+    })
   }
 
   console.log({ dtoFilms })
